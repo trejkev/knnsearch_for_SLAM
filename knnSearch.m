@@ -32,21 +32,27 @@
 
 sumOfDistances = 0;
 
+% Make the ground truth suitable
 GT_Matrix = imread('Ground_Truth.png');
-GT_Matrix = imbinarize(GT_Matrix);        % Make sure the image is B/W
+GT_Matrix = imbinarize(GT_Matrix);
 GTBlackPoints = blkPoints(GT_Matrix, 1000, 1000);
-%scatter(GTBlackPoints(:,1), GTBlackPoints(:,2))
 
-
+% Make the SLAM map suitable
 SLAM_Map_Matrix = imread('SLAM_Gen_Map.png');
-SLAM_Map_Matrix = imbinarize(SLAM_Map_Matrix);        % Make sure the image is B/W
+SLAM_Map_Matrix = imbinarize(SLAM_Map_Matrix);
 SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, 1000, 1000);
 
+% Use the knnsearch function
 [knearNeigh, distances] = knnsearch(GTBlackPoints, SLAMBlackPoints);
 
-for actualDistance = 1:size(distances)
+% Sum all the distances to get an idea of how different they are
+[slamRowSize, slamColSize] = size(distances);
+for actualDistance = 1:slamRowSize
     sumOfDistances = sumOfDistances + distances(actualDistance, 1);
 end
+averageOfDistances = sumOfDistances/slamRowSize;
+fprintf("Average of distances: " + averageOfDistances + "\n")
+fprintf("Sum of distances: " + sumOfDistances + "\n")
 
 %% Generates matrix with x and y coordinates of each black point in the image
 %     It allows a maximum of rowRes x colRes points
