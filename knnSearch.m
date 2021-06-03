@@ -30,17 +30,24 @@
 
 %% Globals
 
+if exist('Statistics.png', 'file') == 2
+    delete('Statistics.png')
+end
+
 sumOfDistances = 0;
+
+rowsSampler = 1000;
+colsSampler = 1000;
 
 % Make the ground truth suitable
 GT_Matrix = imread('Ground_Truth.png');
 GT_Matrix = imbinarize(GT_Matrix);
-GTBlackPoints = blkPoints(GT_Matrix, 1000, 1000);
+GTBlackPoints = blkPoints(GT_Matrix, rowsSampler, colsSampler);
 
 % Make the SLAM map suitable
 SLAM_Map_Matrix = imread('SLAM_Gen_Map.png');
 SLAM_Map_Matrix = imbinarize(SLAM_Map_Matrix);
-SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, 1000, 1000);
+SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, rowsSampler, colsSampler);
 
 % Use the knnsearch function
 [knearNeigh, distances] = knnsearch(GTBlackPoints, SLAMBlackPoints);
@@ -50,23 +57,58 @@ SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, 1000, 1000);
 for actualDistance = 1:slamRowSize
     sumOfDistances = sumOfDistances + distances(actualDistance, 1);
 end
-averageOfDistances = sumOfDistances/slamRowSize;
-fprintf("Average of distances: " + averageOfDistances + "\n")
-fprintf("Sum of distances: " + sumOfDistances + "\n")
+
+f=figure('visible','off');
+subplot(2,2,1)
+histogram(distances(:,1))
+title("Histogram for distances")
+subplot(1,2,2)
+boxplot(distances(:,1))
+title("Boxplot for distances")
+subplot(2,2,3)
+text(0,0.96,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+text(0,0.95,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+text(0,0.8 ,"Mean: "               ); axis off
+text(0.4,0.8, string(mean(distances(:,1))) ); axis off
+text(0,0.7 ,"Sum: "                ); axis off
+text(0.4,0.7, string(sumOfDistances)       ); axis off
+text(0,0.6 ,"Amount: "             ); axis off
+text(0.4,0.6, string(slamRowSize)          ); axis off
+text(0,0.5 ,"Stdev: "              ); axis off
+text(0.4,0.5, string(std(distances(:,1)))  ); axis off
+text(0,0.4 ,"Min: "                ); axis off
+text(0.4,0.4, string(min(distances(:,1)))  ); axis off
+text(0,0.3 ,"Max: "                ); axis off
+text(0.4,0.3, string(max(distances(:,1)))  ); axis off
+text(0,0.2 ,"Mode: "               ); axis off
+text(0.4,0.2, string(mode(distances(:,1))) ); axis off
+text(0,0.16,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+text(0,0.15,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+title("Descriptive statistics")
+saveas(f,'Statistics','png')
+
+fprintf("Completed! \n")
 
 %% Generates matrix with x and y coordinates of each black point in the image
 %     It allows a maximum of rowRes x colRes points
 
 function blkMatrix = blkPoints(image, rowRes, colRes)
     [rowSize, colSize, depth] = size(image);
-    blkMatrix = zeros(1,2);
-    actualRow = 1;
-    actualCol = 1;
+    blkMatrix   = zeros(1,2);
+    actualRow   = 1;
+    actualCol   = 1;
+    actualTrial = 1;
     while actualRow <= rowSize
         while actualCol <= colSize
             isBlack = image(actualRow, actualCol, 1) + image(actualRow, actualCol, 2) + image(actualRow, actualCol, 3);
             if isBlack == 0
-                blkMatrix = [blkMatrix; actualRow, actualCol];
+                if actualTrial == 1
+                    blkMatrix(1,1) = actualRow;
+                    blkMatrix(1,2) = actualCol;
+                else
+                    blkMatrix = [blkMatrix; actualRow, actualCol];
+                end
+                actualTrial = actualTrial + 1;
             end
             actualCol = actualCol + fix(colSize/colRes);
         end
