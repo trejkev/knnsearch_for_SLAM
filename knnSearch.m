@@ -72,7 +72,7 @@ text(0,0.8 ,"Mean: "               ); axis off
 text(0.4,0.8, string(mean(distances(:,1))) ); axis off
 text(0,0.7 ,"Sum: "                ); axis off
 text(0.4,0.7, string(sumOfDistances)       ); axis off
-text(0,0.6 ,"Amount: "             ); axis off
+text(0,0.6 ,"Samples: "             ); axis off
 text(0.4,0.6, string(slamRowSize)          ); axis off
 text(0,0.5 ,"Stdev: "              ); axis off
 text(0.4,0.5, string(std(distances(:,1)))  ); axis off
