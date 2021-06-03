@@ -5,3 +5,4 @@ Constraints:
   1. Both images need to have the same DPI and have the same dimensions.
   2. Both images need to be B/W.
   3. For ideal results, the user has to modify the SLAM_Gen_Map image, so that it is aligned and centered to match with the Ground_Truth image.
+  4. The script generates a file named "Statistics.png" with all the relevant statistical data from knn algorithm.
