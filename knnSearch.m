@@ -26,6 +26,11 @@
 %     1. Make sure both images come with same DPI.
 %     2. Make sure both images have the same
 %        alignment.
+%     3. Modify pixToCentimeter accordingly:
+%        3.1. For "arena_cierre_lazo_simplificada.world"
+%             1 meter ~= 527 pixels.
+%        3.2. For "arena_casa_simplificada.world"
+%             1 meter ~= 701 pixels.
 %----------------------------------------------%
 
 %% Globals
@@ -36,8 +41,9 @@ end
 
 sumOfDistances = 0;
 
-rowsSampler = 1000;
-colsSampler = 1000;
+rowsSampler     = 1000;
+colsSampler     = 1000;
+pixToCentimeter = 5.27;
 
 % Make the ground truth suitable
 GT_Matrix = imread('Ground_Truth.png');
@@ -52,36 +58,42 @@ SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, rowsSampler, colsSampler);
 % Use the knnsearch function
 [knearNeigh, distances] = knnsearch(GTBlackPoints, SLAMBlackPoints);
 
+distances_cm = distances(:,1)/pixToCentimeter;
+
 % Sum all the distances to get an idea of how different they are
-[slamRowSize, slamColSize] = size(distances);
+[slamRowSize, slamColSize] = size(distances_cm);
 for actualDistance = 1:slamRowSize
-    sumOfDistances = sumOfDistances + distances(actualDistance, 1);
+    sumOfDistances = sumOfDistances + distances_cm(actualDistance, 1);
 end
 
+% Plot a figure with all the relevant statistics
 f=figure('visible','off');
 subplot(2,2,1)
-histogram(distances(:,1))
+histogram(distances_cm)
+ylabel('Frequency') 
+xlabel('Distance (cm)') 
 title("Histogram for distances")
 subplot(1,2,2)
-boxplot(distances(:,1))
+boxplot(distances_cm)
+ylabel('Distance (cm)')
 title("Boxplot for distances")
 subplot(2,2,3)
 text(0,0.96,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
 text(0,0.95,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
-text(0,0.8 ,"Mean: "               ); axis off
-text(0.4,0.8, string(mean(distances(:,1))) ); axis off
-text(0,0.7 ,"Sum: "                ); axis off
-text(0.4,0.7, string(sumOfDistances)       ); axis off
-text(0,0.6 ,"Samples: "             ); axis off
-text(0.4,0.6, string(slamRowSize)          ); axis off
-text(0,0.5 ,"Stdev: "              ); axis off
-text(0.4,0.5, string(std(distances(:,1)))  ); axis off
-text(0,0.4 ,"Min: "                ); axis off
-text(0.4,0.4, string(min(distances(:,1)))  ); axis off
-text(0,0.3 ,"Max: "                ); axis off
-text(0.4,0.3, string(max(distances(:,1)))  ); axis off
-text(0,0.2 ,"Mode: "               ); axis off
-text(0.4,0.2, string(mode(distances(:,1))) ); axis off
+text(0,0.8 ,"Mean: "                          ); axis off
+text(0.4,0.8, string(mean(distances_cm(:,1))) ); axis off
+text(0,0.7 ,"Sum: "                           ); axis off
+text(0.4,0.7, string(sumOfDistances)          ); axis off
+text(0,0.6 ,"Samples: "                       ); axis off
+text(0.4,0.6, string(slamRowSize)             ); axis off
+text(0,0.5 ,"Stdev: "                         ); axis off
+text(0.4,0.5, string(std(distances_cm(:,1)))  ); axis off
+text(0,0.4 ,"Min: "                           ); axis off
+text(0.4,0.4, string(min(distances_cm(:,1)))  ); axis off
+text(0,0.3 ,"Max: "                           ); axis off
+text(0.4,0.3, string(max(distances_cm(:,1)))  ); axis off
+text(0,0.2 ,"Mode: "                          ); axis off
+text(0.4,0.2, string(mode(distances_cm(:,1))) ); axis off
 text(0,0.16,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
 text(0,0.15,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
 title("Descriptive statistics")
