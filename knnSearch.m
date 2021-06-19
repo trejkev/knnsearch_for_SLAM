@@ -62,9 +62,6 @@ distances_cm = distances(:,1)/pixToCentimeter;
 
 % Sum all the distances to get an idea of how different they are
 [slamRowSize, slamColSize] = size(distances_cm);
-for actualDistance = 1:slamRowSize
-    sumOfDistances = sumOfDistances + distances_cm(actualDistance, 1);
-end
 
 % Plot a figure with all the relevant statistics
 f=figure('visible','off');
@@ -80,22 +77,24 @@ title("Boxplot for distances")
 subplot(2,2,3)
 text(0,0.96,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
 text(0,0.95,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
-text(0,0.8 ,"Mean: "                          ); axis off
-text(0.4,0.8, string(mean(distances_cm(:,1))) ); axis off
-text(0,0.7 ,"Sum: "                           ); axis off
-text(0.4,0.7, string(sumOfDistances)          ); axis off
-text(0,0.6 ,"Samples: "                       ); axis off
-text(0.4,0.6, string(slamRowSize)             ); axis off
-text(0,0.5 ,"Stdev: "                         ); axis off
-text(0.4,0.5, string(std(distances_cm(:,1)))  ); axis off
-text(0,0.4 ,"Min: "                           ); axis off
-text(0.4,0.4, string(min(distances_cm(:,1)))  ); axis off
-text(0,0.3 ,"Max: "                           ); axis off
-text(0.4,0.3, string(max(distances_cm(:,1)))  ); axis off
-text(0,0.2 ,"Mode: "                          ); axis off
-text(0.4,0.2, string(mode(distances_cm(:,1))) ); axis off
-text(0,0.16,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
-text(0,0.15,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+text(0,0.8 ,"Mean: "                            ); axis off
+text(0.4,0.8, string(mean(distances_cm(:,1)))   ); axis off
+text(0,0.7 ,"Mode: "                            ); axis off
+text(0.4,0.7, string(mode(distances_cm(:,1)))   ); axis off
+text(0,0.6 ,"Median: "                          ); axis off
+text(0.4,0.6, string(median(distances_cm(:,1))) ); axis off
+text(0,0.5 ,"Samples: "                         ); axis off
+text(0.4,0.5, string(slamRowSize)               ); axis off
+text(0,0.4 ,"Stdev: "                           ); axis off
+text(0.4,0.4, string(std(distances_cm(:,1)))    ); axis off
+text(0,0.3 ,"Min: "                             ); axis off
+text(0.4,0.3, string(min(distances_cm(:,1)))    ); axis off
+text(0,0.2 ,"Max: "                             ); axis off
+text(0.4,0.2, string(max(distances_cm(:,1)))    ); axis off
+text(0,0.1 ,"Mode: "                            ); axis off
+text(0.4,0.1, string(mode(distances_cm(:,1)))   ); axis off
+text(0,0.06,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
+text(0,0.05,"\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_"  ); axis off
 title("Descriptive statistics")
 saveas(f,'Statistics','png')
 
