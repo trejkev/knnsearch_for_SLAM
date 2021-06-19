@@ -27,10 +27,10 @@
 %     2. Make sure both images have the same
 %        alignment.
 %     3. Modify pixToCentimeter accordingly:
-%        3.1. For "arena_cierre_lazo_simplificada.world"
-%             1 meter ~= 527 pixels.
+%        3.1. For "arena_cierre_lazo_asimetrica.world"
+%             1 meter ~= 529 pixels (+/- 5 pix ~ 9.5 mm).
 %        3.2. For "arena_casa_simplificada.world"
-%             1 meter ~= 701 pixels.
+%             1 meter ~= 709 pixels  (+/- 6.5 pix ~ 9.5 mm).
 %----------------------------------------------%
 
 %% Globals
@@ -43,7 +43,7 @@ sumOfDistances = 0;
 
 rowsSampler     = 1000;
 colsSampler     = 1000;
-pixToCentimeter = 5.27;
+pixToCentimeter = 5.29;
 
 % Make the ground truth suitable
 GT_Matrix = imread('Ground_Truth.png');
