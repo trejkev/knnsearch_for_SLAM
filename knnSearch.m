@@ -34,6 +34,7 @@
 %----------------------------------------------%
 
 %% Globals
+clear 
 
 if exist('Statistics.png', 'file') == 2
     delete('Statistics.png')
@@ -48,12 +49,20 @@ pixToCentimeter = 5.29;
 % Make the ground truth suitable
 GT_Matrix = imread('Ground_Truth.png');
 GT_Matrix = imbinarize(GT_Matrix);
+[GTrowSize, GTcolSize, GTdepth] = size(GT_Matrix);
 GTBlackPoints = blkPoints(GT_Matrix, rowsSampler, colsSampler);
 
 % Make the SLAM map suitable
 SLAM_Map_Matrix = imread('SLAM_Gen_Map.png');
 SLAM_Map_Matrix = imbinarize(SLAM_Map_Matrix);
+[SLrowSize, SLcolSize, SLdepth] = size(SLAM_Map_Matrix);
 SLAMBlackPoints = blkPoints(SLAM_Map_Matrix, rowsSampler, colsSampler);
+
+% Scale the SLAM coordinates to match the ground truth sizing
+Scale_row = GTrowSize/SLrowSize;
+Scale_col = GTcolSize/SLcolSize;
+SLAMBlackPoints(:,1) = SLAMBlackPoints(:,1)*Scale_row;
+SLAMBlackPoints(:,2) = SLAMBlackPoints(:,2)*Scale_col;
 
 % Use the knnsearch function
 [knearNeigh, distances] = knnsearch(GTBlackPoints, SLAMBlackPoints);
@@ -62,6 +71,20 @@ distances_cm = distances(:,1)/pixToCentimeter;
 
 % Sum all the distances to get an idea of how different they are
 [slamRowSize, slamColSize] = size(distances_cm);
+
+% Plot GT and SLAM together
+p = figure('visible','off');
+scatter(SLAMBlackPoints(:,1)/(pixToCentimeter*100), SLAMBlackPoints(:,2)/(pixToCentimeter*100), '.')
+hold on
+scatter(GTBlackPoints(:,1)/(pixToCentimeter*100), GTBlackPoints(:,2)/(pixToCentimeter*100), '.')
+xlabel('x dim (m)')
+ylabel('y dim (m)')
+Legend = legend("SLAM", "Ground Truth");
+Legend.Location = 'northeast';
+Legend.Color = 'none';
+Legend.EdgeColor = 'none';
+saveas(p,'PlotSLAMvsGT','png')
+
 
 % Plot a figure with all the relevant statistics
 f=figure('visible','off');
