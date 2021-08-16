@@ -77,12 +77,14 @@ p = figure('visible','off');
 scatter(SLAMBlackPoints(:,1)/(pixToCentimeter*100), SLAMBlackPoints(:,2)/(pixToCentimeter*100), '.')
 hold on
 scatter(GTBlackPoints(:,1)/(pixToCentimeter*100), GTBlackPoints(:,2)/(pixToCentimeter*100), '.')
-xlabel('x dim (m)')
-ylabel('y dim (m)')
+xlabel('meters')
+ylabel('meters')
 Legend = legend("SLAM", "Ground Truth");
 Legend.Location = 'northeast';
 Legend.Color = 'none';
 Legend.EdgeColor = 'none';
+camroll(-90)
+axis equal
 saveas(p,'PlotSLAMvsGT','png')
 
 
