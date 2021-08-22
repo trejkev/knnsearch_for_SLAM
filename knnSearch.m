@@ -33,6 +33,16 @@
 %             1 meter ~= 709 pixels  (+/- 6.5 pix ~ 9.5 mm).
 %----------------------------------------------%
 
+%% Remove old analysis files
+
+if exist('Statistics.png', 'file') == 2
+    delete('Statistics.png')
+end
+
+if exist('PlotSLAMvsGT.png', 'file') == 2
+    delete('PlotSLAMvsGT.png')
+end
+
 %% Globals
 clear 
 
